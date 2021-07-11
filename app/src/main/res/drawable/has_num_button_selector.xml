@@ -2,8 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_pressed="false"
-        android:drawable="@drawable/rect_button_unselected"/>
+        android:drawable="@drawable/has_num_button_unpressed"/>
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/has_num_button_selected"/>
+        android:drawable="@drawable/has_num_button_pressed_ripple"/>
 </selector>

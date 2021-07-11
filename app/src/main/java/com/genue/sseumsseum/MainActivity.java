@@ -2,7 +2,6 @@ package com.genue.sseumsseum;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -16,22 +15,28 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.View;
 
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
 {
 	UserDBManager userDB;
 
+	UserInfo USER;
+
 	ViewPager2 viewPager2;
 	TabLayout tabLayout;
 
+	TextView AccountText;
+
 	public boolean isReady = false;
+
+	public int num_page = 3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -40,11 +45,14 @@ public class MainActivity extends AppCompatActivity
 
 		Log.d(">>>>", "MainActivity onCreate");
 
+		USER = UserInfo.getInstance();
 		userDB = UserDBManager.getInstance(getApplicationContext());
-		if(userDB.isEmpty()) {
+		USER.setAccount(userDB.getAccount());
+		if(USER.getAccount() == -1) {
 			startActivityResult.launch(new Intent(this, StartActivity.class));
 		}
 		else {
+			Log.d(">>>>", "시작금 : " + USER.getAccount());
 			initUI();
 		}
 	}
@@ -59,6 +67,10 @@ public class MainActivity extends AppCompatActivity
 	private void initUI(){
 		setContentView(R.layout.activity_main);
 
+		AccountText = findViewById(R.id.tvAccount);
+
+		AccountText.setText(USER.getAccount() + " 원");
+
 		FloatingActionButton fab = findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener()
 		{
@@ -72,7 +84,7 @@ public class MainActivity extends AppCompatActivity
 		viewPager2 = findViewById(R.id.viewPager2);
 		tabLayout = findViewById(R.id.tabLayout);
 
-		viewPager2.setAdapter(new mainPagerAdapter(this, 3));
+		viewPager2.setAdapter(new MainPagerAdapter(this, num_page));
 		viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
 		viewPager2.setCurrentItem(0);
 		viewPager2.setOffscreenPageLimit(3);
@@ -91,7 +103,28 @@ public class MainActivity extends AppCompatActivity
 			public void onPageSelected(int position)
 			{
 				super.onPageSelected(position);
-				//인디케이터
+
+			}
+		});
+
+		float pageMargin = this.getResources().getDimensionPixelOffset(R.dimen.margin);
+		float pageOffset = this.getResources().getDimensionPixelOffset(R.dimen.offset);
+
+		viewPager2.setPageTransformer(new ViewPager2.PageTransformer()
+		{
+			@Override
+			public void transformPage(@NonNull View page, float position)
+			{
+				float myOffset = position * -(2 * pageOffset);
+				if(viewPager2.getOrientation() == ViewPager2.ORIENTATION_HORIZONTAL){
+					if(ViewCompat.getLayoutDirection(viewPager2) == ViewCompat.LAYOUT_DIRECTION_RTL){
+						page.setTranslationX(-myOffset);
+					} else {
+						page.setTranslationX(myOffset);
+					}
+				} else{
+					page.setTranslationY(myOffset);
+				}
 			}
 		});
 
@@ -123,11 +156,32 @@ public class MainActivity extends AppCompatActivity
 			Log.d(">>>>", "onActivityResult");
 			if(result.getResultCode() == Activity.RESULT_OK) {
 				Intent fromOther = result.getData();
-				String money = fromOther.getStringExtra("money");
-				Log.d(">>>>", money);
+				int money = fromOther.getIntExtra("money", -1);
+				Log.d(">>>>", money+"");
+				USER.setAccount(money);
+				userDB.startData(money);
 				initUI();
 				isReady = true;
 			}
 		}
 	});
+
+	public void onInsertClick(View v){
+		Intent insertIntent = new Intent(this, InsertActivity.class);
+		switch(v.getId()){
+			case R.id.tvEarn:
+				insertIntent.putExtra("tab", Define.REQUEST_INSERT_EARN);
+				break;
+			case R.id.tvSave:
+				insertIntent.putExtra("tab", Define.REQUEST_INSERT_SAVE);
+				break;
+			case R.id.tvSpend:
+				insertIntent.putExtra("tab", Define.REQUEST_INSERT_SPEND);
+				break;
+			case R.id.tvAccount:
+				insertIntent.putExtra("tab", Define.REQUEST_INSERT_ACCOUNT);
+				break;
+		}
+		startActivityResult.launch(insertIntent);
+	}
 }

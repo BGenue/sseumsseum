@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#5A5A5A</color>
+    <color name="gray_selected">#424242</color>
 
     <color name="black_title">#CC222222</color>
     <color name="black_body">#CC333333</color>
@@ -17,4 +18,5 @@
     <color name="purple">#A783C9</color>
     <color name="orange">#EDB079</color>
     <color name="red">#F48FB1</color>
+    <color name="purple_selected">#614C75</color>
 </resources>

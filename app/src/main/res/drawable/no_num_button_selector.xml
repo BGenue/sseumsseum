@@ -5,5 +5,5 @@
         android:drawable="@drawable/no_num_button_unpressed"/>
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/no_num_button_pressed"/>
+        android:drawable="@drawable/no_num_button_pressed_ripple"/>
 </selector>

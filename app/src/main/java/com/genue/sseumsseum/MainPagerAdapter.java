@@ -7,38 +7,30 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class mainPagerAdapter extends FragmentStateAdapter
+public class MainPagerAdapter extends FragmentStateAdapter
 {
 	int MAX_PAGES;
 
-	public mainPagerAdapter(@NonNull FragmentActivity fragmentActivity, int count)
+	public MainPagerAdapter(@NonNull FragmentActivity fragmentActivity, int count)
 	{
 		super(fragmentActivity);
 		MAX_PAGES = count;
-	}
-
-	public mainPagerAdapter(@NonNull Fragment fragment)
-	{
-		super(fragment);
-	}
-
-	public mainPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle)
-	{
-		super(fragmentManager, lifecycle);
 	}
 
 	@NonNull
 	@Override
 	public Fragment createFragment(int position)
 	{
-		if(position == 0){
+		int index = realPosition(position);
+		if(index == 0) {
 			return new DayFragment();
-		} else if(position == 1){
+		}
+		else if(index == 1) {
 			return new WeekFragment();
-		} else if(position == 2){
+		}
+		else {
 			return new MonthFragment();
 		}
-		return null;
 	}
 
 	@Override
@@ -48,7 +40,8 @@ public class mainPagerAdapter extends FragmentStateAdapter
 	}
 
 
-	public int realPosition(int pos){
-		return pos % MAX_PAGES;
+	public int realPosition(int pos)
+	{
+		return pos%MAX_PAGES;
 	}
 }

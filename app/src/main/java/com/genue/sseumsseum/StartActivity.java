@@ -50,7 +50,7 @@ public class StartActivity extends AppCompatActivity
 				switch (keyCode){
 					case KeyEvent.KEYCODE_ENTER:
 						if(edit.getText().length() > 0) {
-							button_first.setBackground(ContextCompat.getDrawable(mContext, R.drawable.rect_button_selector));
+							button_first.setBackground(ContextCompat.getDrawable(mContext, R.drawable.has_num_button_pressed_ripple));
 							button_first.setTextColor(ContextCompat.getColor(mContext, R.color.white));
 							button_first.setOnClickListener(new View.OnClickListener()
 							{
@@ -63,14 +63,14 @@ public class StartActivity extends AppCompatActivity
 										startLayout.startAnimation(shakeAnim);
 									}else{
 										Intent toMain  = new Intent();
-										toMain.putExtra("money", edit.getText().toString());
+										toMain.putExtra("money", Integer.parseInt(money));
 										setResult(Activity.RESULT_OK, toMain);
 										finish();
 									}
 								}
 							});
 						}else{
-							button_first.setBackground(ContextCompat.getDrawable(mContext, R.drawable.no_num_button_selector));
+							button_first.setBackground(ContextCompat.getDrawable(mContext, R.drawable.no_num_button_pressed_ripple));
 							button_first.setTextColor(ContextCompat.getColor(mContext, R.color.white));
 							startLayout.startAnimation(shakeAnim);
 						}
